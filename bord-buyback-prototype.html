@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1440"/>
+<title>Bord — Buyback</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:13px;min-width:1280px;}
+
+/* ─── SCREENS ─── */
+.screen{display:none;width:100%;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:200px;min-height:100vh;background:#fff;border-right:1px solid #e4e4e7;display:flex;flex-direction:column;flex-shrink:0;}
+.logo{padding:18px 16px 14px;display:flex;align-items:center;gap:3px;border-bottom:1px solid #f4f4f5;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:#ef4444;margin-right:1px;}
+.logo-text{font-size:17px;font-weight:700;color:#18181b;letter-spacing:-0.4px;}
+.nav{flex:1;padding:8px 8px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;font-size:13px;color:#52525b;cursor:pointer;transition:all .12s;line-height:1.2;}
+.nav-item:hover{background:#f4f4f5;color:#18181b;}
+.nav-item.active{background:#ecfdf5;color:#059669;font-weight:500;}
+.nav-item .ni-icon{width:15px;height:15px;flex-shrink:0;opacity:.55;}
+.nav-item.active .ni-icon{opacity:1;}
+.nav-section{margin-top:2px;}
+.nav-section-header{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 3px;font-size:12px;font-weight:600;color:#a1a1aa;cursor:pointer;}
+.nav-section-header:hover{color:#71717a;}
+.nav-sub{padding-left:8px;}
+.sidebar-footer{padding:10px 12px;border-top:1px solid #f4f4f5;display:flex;align-items:center;gap:9px;}
+.avatar-wrap{width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#e4e4e7;}
+.avatar-initials{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#71717a;}
+.footer-info{flex:1;min-width:0;}
+.footer-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.footer-role{font-size:11px;color:#a1a1aa;}
+.footer-arrow{font-size:11px;color:#d4d4d8;}
+
+/* ─── TOPBAR ─── */
+.topbar{height:52px;background:#fff;border-bottom:1px solid #e4e4e7;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
+.tb-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:#a1a1aa;}
+.tb-breadcrumb a{color:#a1a1aa;text-decoration:none;cursor:pointer;}
+.tb-breadcrumb a:hover{color:#18181b;}
+.tb-breadcrumb .sep{color:#d4d4d8;}
+.tb-breadcrumb strong{color:#18181b;font-weight:500;}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.tb-search{display:flex;align-items:center;gap:7px;background:#f9f9f9;border:1px solid #e4e4e7;border-radius:8px;padding:7px 14px;width:400px;color:#a1a1aa;font-size:13px;}
+.tb-icon-btn{width:30px;height:30px;border-radius:7px;border:1px solid #e4e4e7;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:#52525b;}
+.notif-badge{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#ef4444;border:1.5px solid #fff;}
+
+/* ─── MAIN ─── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.content{flex:1;padding:20px 24px;overflow-y:auto;}
+.page-heading{font-size:18px;font-weight:700;margin-bottom:18px;}
+
+/* ─── TOOLBAR ─── */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.filter-group{display:flex;align-items:center;gap:6px;}
+.filter-icon-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #e4e4e7;border-radius:7px;background:#fff;font-size:12px;color:#52525b;cursor:pointer;font-family:'Inter',sans-serif;font-weight:400;white-space:nowrap;}
+.filter-icon-btn:hover{border-color:#a1a1aa;}
+.sort-btn{display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid #e4e4e7;border-radius:7px;background:#fff;font-size:12px;font-weight:500;color:#18181b;cursor:pointer;font-family:'Inter',sans-serif;}
+.toggle-pair{display:flex;border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;background:#fff;}
+.toggle-opt{padding:6px 16px;font-size:12px;font-weight:500;color:#71717a;cursor:pointer;transition:all .12s;}
+.toggle-opt.active{background:#18181b;color:#fff;}
+
+/* ─── TABS ─── */
+.tabs{display:flex;align-items:center;gap:0;margin-bottom:12px;border-bottom:1.5px solid #e4e4e7;}
+.tab{padding:9px 0;margin-right:24px;font-size:13px;font-weight:400;color:#71717a;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .12s;}
+.tab:hover{color:#18181b;}
+.tab.active{color:#18181b;border-bottom-color:#18181b;font-weight:500;}
+.tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:20px;font-size:11px;font-weight:600;}
+.tab.active .tab-badge{background:#f59e0b;color:#fff;}
+.tab:nth-child(2) .tab-badge{background:#3b82f6;color:#fff;}
+.tab:nth-child(3) .tab-badge{background:#22c55e;color:#fff;}
+.tab:nth-child(4) .tab-badge{background:#ef4444;color:#fff;}
+.tab:nth-child(5) .tab-badge{background:#ef4444;color:#fff;}
+.sla-note{display:flex;align-items:center;gap:6px;font-size:12px;color:#71717a;margin-bottom:12px;}
+
+/* ─── LIST TABLE ─── */
+.list-wrap{background:#fff;border:1px solid #e4e4e7;border-radius:10px;overflow:hidden;}
+.list-row{display:grid;grid-template-columns:180px 1fr 1fr 130px 200px 160px 100px;align-items:center;padding:15px 20px;border-bottom:1px solid #f4f4f5;cursor:pointer;transition:background .1s;}
+.list-row:last-child{border-bottom:none;}
+.list-row:hover{background:#fafafa;}
+.list-row-hdr{background:#fafafa;padding:8px 20px;border-bottom:1px solid #e4e4e7;}
+.col-hdr{font-size:11px;font-weight:500;color:#a1a1aa;text-transform:none;letter-spacing:0;}
+.bbx-id{font-size:13px;font-weight:600;color:#18181b;}
+.bbx-sub{display:flex;align-items:center;gap:4px;margin-top:2px;font-size:12px;color:#71717a;}
+.cell-lbl{font-size:11px;color:#a1a1aa;margin-bottom:2px;}
+.cell-val{font-size:13px;color:#18181b;display:flex;align-items:center;gap:5px;}
+.co-logo{width:20px;height:20px;border-radius:4px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.tiempo-row{display:flex;align-items:center;gap:5px;}
+.tiempo-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;}
+.btn-consultar{padding:6px 14px;border:1px solid #059669;border-radius:7px;background:#fff;color:#059669;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.btn-consultar:hover{background:#ecfdf5;}
+
+/* ─── QUOTE DETAIL HEADER ─── */
+.detail-card{background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:18px 20px;margin-bottom:12px;}
+.qd-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.qd-title-row{display:flex;align-items:center;gap:10px;}
+.qd-title{font-size:20px;font-weight:700;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;border:1.5px solid;cursor:pointer;line-height:1;}
+.sp-yellow{border-color:#f59e0b;color:#d97706;background:#fffbeb;}
+.sp-dot{width:7px;height:7px;border-radius:50%;background:#f59e0b;flex-shrink:0;}
+.sp-arr{font-size:9px;margin-left:1px;}
+.qd-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:#71717a;margin-top:5px;}
+.qd-meta b{color:#18181b;font-weight:500;}
+.meta-sep{color:#d4d4d8;}
+.update-box{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.update-lbl{font-size:10px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.5px;}
+.update-inner{display:flex;align-items:center;gap:8px;}
+.update-icon{width:30px;height:30px;border:1px solid #e4e4e7;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#71717a;}
+.update-texts{display:flex;flex-direction:column;gap:2px;}
+.update-desc{font-size:12px;font-weight:500;}
+.update-date{display:flex;align-items:center;gap:5px;font-size:11px;color:#71717a;}
+.update-online{width:7px;height:7px;border-radius:50%;background:#3b82f6;}
+.btn-ver-hist{padding:5px 12px;border:1.5px solid #059669;border-radius:7px;background:#fff;color:#059669;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
+.divider{border:0;border-top:1px solid #f4f4f5;margin:14px 0;}
+.client-row{display:flex;align-items:center;gap:20px;}
+.client-logo{width:44px;height:44px;border-radius:10px;background:#18181b;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.client-logo svg{color:#fff;}
+.client-name-col{display:flex;flex-direction:column;gap:2px;min-width:100px;}
+.cl-company{font-size:10px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.4px;}
+.cl-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px;}
+.cl-link{color:#059669;font-size:11px;text-decoration:none;}
+.fields-row{display:flex;gap:28px;flex:1;}
+.field{display:flex;flex-direction:column;gap:2px;}
+.field-lbl{font-size:10px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.3px;}
+.field-val{font-size:13px;font-weight:500;display:flex;align-items:center;gap:4px;}
+.btn-agregar{margin-left:auto;display:flex;align-items:center;gap:5px;padding:7px 14px;border:1.5px solid #059669;border-radius:7px;background:#fff;color:#059669;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
+
+/* ─── SLA BANNER ─── */
+.sla-banner{display:flex;align-items:center;gap:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;padding:11px 16px;margin-bottom:12px;font-size:13px;color:#374151;}
+.sla-banner b{color:#1e40af;}
+
+/* ─── BODY LAYOUT ─── */
+.body-layout{display:flex;gap:14px;align-items:flex-start;}
+.devices-col{flex:1;min-width:0;}
+.summary-col{width:290px;flex-shrink:0;}
+
+/* ─── DEVICES PANEL ─── */
+.devices-panel{background:#fff;border:1px solid #e4e4e7;border-radius:10px;overflow:hidden;}
+.dp-header{display:flex;align-items:center;gap:8px;padding:14px 18px 12px;border-bottom:1px solid #f4f4f5;}
+.dp-title{font-size:14px;font-weight:600;}
+.dp-count{font-size:12px;color:#71717a;}
+.dp-sep{width:1px;height:13px;background:#e4e4e7;}
+.country-block{padding:12px 18px 6px;}
+.country-hdr{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:13px;font-weight:600;}
+.country-cnt{font-size:12px;color:#a1a1aa;font-weight:400;}
+.chev{font-size:10px;color:#a1a1aa;margin-left:1px;}
+.device-card{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:11px 12px;border:1px solid #e4e4e7;border-radius:9px;margin-bottom:7px;cursor:pointer;transition:all .12s;}
+.device-card:hover{border-color:#059669;background:#f9fffd;}
+.device-card.active-card{border-color:#059669;background:#f0fdf9;}
+.dc-thumb{width:56px;height:56px;border-radius:7px;background:#f4f4f5;border:1px solid #e4e4e7;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden;}
+.dc-thumb img{width:100%;height:100%;object-fit:cover;}
+.dc-info{min-width:0;}
+.dc-name{font-size:13px;font-weight:600;margin-bottom:5px;}
+.dc-badges{display:flex;gap:4px;flex-wrap:wrap;}
+.dc-badge{padding:2px 7px;border-radius:5px;font-size:11px;font-weight:500;background:#f4f4f5;color:#52525b;border:1px solid #e4e4e7;}
+.dc-cols{display:flex;gap:20px;align-items:center;}
+.dc-col{min-width:80px;}
+.dc-col-lbl{font-size:11px;color:#a1a1aa;margin-bottom:2px;}
+.dc-col-val{font-size:12px;font-weight:500;color:#18181b;}
+.dc-status{display:flex;align-items:center;gap:5px;}
+.st-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.st-dot.yellow{background:#f59e0b;}
+.st-dot.green{background:#22c55e;}
+.st-text{font-size:12px;font-weight:500;}
+.st-text.yellow{color:#d97706;}
+.st-text.green{color:#16a34a;}
+/* scrollbar on device list */
+.devices-scroll{max-height:520px;overflow-y:auto;}
+.devices-scroll::-webkit-scrollbar{width:4px;}
+.devices-scroll::-webkit-scrollbar-track{background:transparent;}
+.devices-scroll::-webkit-scrollbar-thumb{background:#e4e4e7;border-radius:2px;}
+
+/* ─── SUMMARY PANEL ─── */
+.summary-card{background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:18px;}
+.sc-icon{font-size:16px;margin-bottom:10px;}
+.sc-title{font-size:13px;font-weight:600;margin-bottom:14px;}
+.sc-divider{border:0;border-top:1px solid #f4f4f5;margin:10px 0 12px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.sc-lbl{font-size:12px;color:#52525b;}
+.sc-val{font-size:13px;font-weight:700;}
+.prog-track{height:5px;background:#f4f4f5;border-radius:3px;margin-bottom:16px;}
+.prog-fill{height:100%;border-radius:3px;background:#059669;transition:width .4s ease;}
+.btn-empezar{width:100%;padding:11px;border-radius:8px;background:#059669;color:#fff;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .12s;}
+.btn-empezar:hover{background:#047857;}
+
+/* ─── MODAL ─── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:50;display:none;}
+.modal-backdrop.open{display:block;}
+.modal-panel{position:fixed;top:0;right:0;bottom:0;width:600px;background:#fff;z-index:51;display:flex;flex-direction:column;box-shadow:-4px 0 32px rgba(0,0,0,.1);transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+.modal-panel.open{transform:translateX(0);}
+
+/* modal header */
+.mp-top{padding:16px 20px 14px;border-bottom:1px solid #f4f4f5;}
+.mp-counter-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.mp-counter{font-size:12px;font-weight:500;color:#a1a1aa;}
+.mp-close{width:28px;height:28px;border-radius:6px;border:1px solid #e4e4e7;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#71717a;font-size:15px;transition:all .12s;}
+.mp-close:hover{background:#f4f4f5;color:#18181b;}
+.mp-device-row{display:flex;align-items:center;gap:12px;}
+.mp-thumb{width:52px;height:52px;border-radius:8px;background:#f4f4f5;border:1px solid #e4e4e7;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.mp-name{font-size:15px;font-weight:700;margin-bottom:3px;}
+.mp-sku{font-size:11px;color:#a1a1aa;font-family:monospace;margin-bottom:5px;}
+.mp-badges{display:flex;gap:4px;}
+.mp-badge{padding:2px 8px;border-radius:5px;font-size:11px;font-weight:500;background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe;}
+
+/* modal tabs — segmented pill style */
+.mp-tabs{display:flex;gap:2px;margin:14px 20px 0;background:#f4f4f5;border-radius:8px;padding:3px;}
+.mp-tab{flex:1;padding:7px 6px;text-align:center;font-size:12px;font-weight:500;color:#71717a;cursor:pointer;border-radius:6px;transition:all .12s;}
+.mp-tab:hover{color:#18181b;}
+.mp-tab.active{background:#fff;color:#18181b;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+
+/* modal body */
+.mp-body{flex:1;overflow-y:auto;}
+.mp-body::-webkit-scrollbar{width:4px;}
+.mp-body::-webkit-scrollbar-thumb{background:#e4e4e7;border-radius:2px;}
+
+/* rows inside modal */
+.mp-section{border-bottom:1px solid #f4f4f5;}
+.mp-row{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid #f9f9f9;}
+.mp-row:last-child{border-bottom:none;}
+.mp-row-lbl{font-size:13px;color:#52525b;}
+.mp-row-val{font-size:13px;font-weight:500;color:#18181b;text-align:right;}
+.mp-row-val.teal{color:#059669;cursor:pointer;}
+.mp-row-val.green-dot{display:flex;align-items:center;gap:5px;}
+.mp-row-val.mono{font-family:monospace;font-size:11px;color:#71717a;}
+
+/* toggle switch */
+.toggle-sw{width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer;flex-shrink:0;}
+.toggle-sw.on{background:#d1d5db;}
+.toggle-sw.sí{background:#059669;}
+.toggle-sw.no{background:#ef4444;}
+.toggle-sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
+.toggle-sw.sí::after,.toggle-sw.on::after{left:18px;}
+.toggle-sw-label{font-size:10px;font-weight:600;color:#fff;position:absolute;right:5px;top:3px;line-height:14px;}
+.toggle-sw.sí .toggle-sw-label{display:none;}
+.toggle-sw.no .toggle-sw-label{display:block;right:auto;left:5px;}
+
+/* photos */
+.mp-photos{padding:14px 20px;border-bottom:1px solid #f4f4f5;}
+.mp-photos-lbl{font-size:11px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.4px;margin-bottom:9px;}
+.photos-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.ph-thumb{width:56px;height:56px;border-radius:7px;background:#f4f4f5;border:1px solid #e4e4e7;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:10px;color:#a1a1aa;}
+.btn-cambiar{margin-top:9px;display:flex;align-items:center;gap:4px;font-size:12px;color:#a1a1aa;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding:0;}
+.mp-comment{padding:12px 20px;border-bottom:1px solid #f4f4f5;}
+.mp-comment-lbl{font-size:11px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px;}
+.mp-textarea{width:100%;padding:9px 12px;border:1px solid #e4e4e7;border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;color:#18181b;resize:vertical;min-height:72px;outline:none;background:#fafafa;}
+.mp-textarea:focus{border-color:#059669;background:#fff;}
+.mp-textarea::placeholder{color:#d4d4d8;}
+.btn-download{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 20px;padding:10px;border:1px solid #e4e4e7;border-radius:7px;background:#fafafa;font-size:12px;color:#52525b;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.btn-download:hover{background:#f4f4f5;border-color:#a1a1aa;}
+
+/* historial */
+.hist-group{padding:16px 20px;}
+.hg-hdr{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.hg-check{width:22px;height:22px;border-radius:50%;background:#dcfce7;border:2px solid #22c55e;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hg-check svg{color:#16a34a;}
+.hg-title{font-size:13px;font-weight:600;}
+.hg-events{padding-left:11px;border-left:2px solid #f4f4f5;margin-left:10px;}
+.hg-event{display:flex;gap:9px;padding:6px 0 6px 12px;position:relative;}
+.hg-event::before{content:'';position:absolute;left:-7px;top:10px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #d4d4d8;}
+.hg-event.red::before{border-color:#ef4444;}
+.hg-event-title{font-size:12px;font-weight:600;color:#18181b;}
+.hg-event-title.red{color:#ef4444;}
+.hg-event-date{font-size:11px;color:#a1a1aa;font-weight:400;margin-left:4px;}
+.hg-event-body{font-size:12px;color:#52525b;margin-top:2px;line-height:1.4;}
+.hg-event-body.red{color:#ef4444;}
+.hist-sep{border:0;border-top:1px solid #f4f4f5;margin:0;}
+
+/* modal footer */
+.mp-footer{padding:14px 20px;border-top:1px solid #f4f4f5;}
+.mp-price-row{display:flex;gap:12px;align-items:flex-end;margin-bottom:12px;}
+.price-left{display:flex;flex-direction:column;gap:2px;}
+.price-lbl{font-size:10px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.4px;}
+.price-suggested{font-size:22px;font-weight:700;color:#18181b;line-height:1;}
+.price-hint{font-size:10px;color:#a1a1aa;margin-top:2px;}
+.price-right{flex:1;display:flex;flex-direction:column;gap:2px;}
+.price-input{width:100%;padding:9px 12px;border:1.5px solid #e4e4e7;border-radius:7px;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;color:#18181b;outline:none;transition:border-color .12s;}
+.price-input:focus{border-color:#059669;}
+.mp-actions{display:flex;gap:8px;}
+.btn-rechazar{padding:10px 14px;border:1.5px solid #ef4444;border-radius:7px;background:#fff;color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.btn-rechazar:hover{background:#fef2f2;}
+.btn-marcar{flex:1;padding:10px;border:1.5px solid #059669;border-radius:7px;background:#fff;color:#059669;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;}
+.btn-marcar:hover{background:#ecfdf5;}
+.btn-marcar:disabled{opacity:.5;cursor:default;}
+.btn-enviar{flex:1;padding:10px;border:none;border-radius:7px;background:#059669;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .12s;}
+.btn-enviar:hover{background:#047857;}
+
+/* ─── TRANSITION ─── */
+.mp-transition-wrap{transition:opacity .14s ease,transform .14s ease;}
+.mp-transition-wrap.out{opacity:0;transform:translateY(-8px);}
+.mp-transition-wrap.in{animation:mpIn .16s ease forwards;}
+@keyframes mpIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ─── NAV DOTS ─── */
+.nav-dots{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:200;background:#fff;padding:7px 12px;border-radius:20px;border:1px solid #e4e4e7;box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.ndot{width:8px;height:8px;border-radius:50%;background:#d4d4d8;cursor:pointer;transition:all .18s;}
+.ndot.active{background:#059669;width:20px;border-radius:4px;}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);background:#18181b;color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;z-index:300;opacity:0;transition:opacity .18s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     SCREEN 1 — Lista de cotizaciones
+════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div class="logo-text">bord</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item">
+        <svg class="ni-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4v-4h2v4h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        Home
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-header">
+          <span>Operaciones</span>
+          <span>∧</span>
+        </div>
+        <div class="nav-sub">
+          <div class="nav-item active">
+            <svg class="ni-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+            Cotizaciones
+          </div>
+          <div class="nav-item">
+            <svg class="ni-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+            Órdenes
+          </div>
+          <div class="nav-item">
+            <svg class="ni-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-5h2.038A2 2 0 0115 10.586V15h.95a2.5 2.5 0 014.9 0H21a1 1 0 001-1v-5a1 1 0 00-.293-.707l-4-4A1 1 0 0017 4H3z"/></svg>
+            Servicios Logs.
+          </div>
+          <div class="nav-item">
+            <svg class="ni-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"/></svg>
+            Stock propio
+          </div>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-header">
+          <span>Catálogo</span>
+          <span>∨</span>
+        </div>
+        <div class="nav-sub">
+          <div class="nav-item">Herramientas</div>
+          <div class="nav-item">Facturación</div>
+          <div class="nav-item">Empresas</div>
+          <div class="nav-item">Países</div>
+          <div class="nav-item">Cargue masivo</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar-wrap"><div class="avatar-initials">SS</div></div>
+      <div class="footer-info">
+        <div class="footer-name">Sebas Spinel</div>
+        <div class="footer-role">Procurement</div>
+      </div>
+      <div class="footer-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div></div>
+      <div class="tb-search">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Busca por ID, cliente, modelo, serial...
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-heading">Cotizaciones</div>
+
+      <div class="toolbar">
+        <div class="filter-group">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" stroke-width="2" style="flex-shrink:0;"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <div class="filter-icon-btn">Empresa <span style="color:#d4d4d8;font-size:9px;margin-left:2px;">▾</span></div>
+          <div class="filter-icon-btn">País <span style="color:#d4d4d8;font-size:9px;margin-left:2px;">▾</span></div>
+          <div class="filter-icon-btn">Responsable <span style="color:#d4d4d8;font-size:9px;margin-left:2px;">▾</span></div>
+          <div class="filter-icon-btn">SLA y ETA <span style="color:#d4d4d8;font-size:9px;margin-left:2px;">▾</span></div>
+          <div class="filter-icon-btn">Marca <span style="color:#d4d4d8;font-size:9px;margin-left:2px;">▾</span></div>
+          <div class="filter-icon-btn">Tipo <span style="color:#d4d4d8;font-size:9px;margin-left:2px;">▾</span></div>
+          <div class="sort-btn">Ordenar <span style="font-size:11px;">↑</span></div>
+        </div>
+        <div class="toggle-pair">
+          <div class="toggle-opt">Cotizaciones</div>
+          <div class="toggle-opt active">Buybacks</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">Por cotizar <span class="tab-badge">15</span></div>
+        <div class="tab">Pendiente de aprobación <span class="tab-badge" style="background:#3b82f6;color:#fff;">20</span></div>
+        <div class="tab">Compradas <span class="tab-badge" style="background:#22c55e;color:#fff;">30</span></div>
+        <div class="tab">Vencidas <span class="tab-badge" style="background:#ef4444;color:#fff;">5</span></div>
+        <div class="tab">Canceladas <span class="tab-badge" style="background:#ef4444;color:#fff;">2</span></div>
+      </div>
+
+      <div class="sla-note">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        SLA de la oferta de buyback <b style="color:#18181b;">24hrs</b>
+      </div>
+
+      <div class="list-wrap">
+        <!-- header row -->
+        <div class="list-row list-row-hdr">
+          <div class="col-hdr"></div>
+          <div class="col-hdr">Cliente</div>
+          <div class="col-hdr">Solicitado por</div>
+          <div class="col-hdr">Herramientas por evaluar</div>
+          <div class="col-hdr">Creación</div>
+          <div class="col-hdr">Tiempo transcurrido</div>
+          <div></div>
+        </div>
+
+        <div class="list-row" onclick="goTo('s2')">
+          <div>
+            <div class="bbx-id">BBX°2041</div>
+            <div class="bbx-sub">🇲🇽 México</div>
+          </div>
+          <div><div class="cell-lbl">Cliente</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Solicitado por</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Herramientas por evaluar</div><div class="cell-val" style="font-weight:600;">20</div></div>
+          <div><div class="cell-lbl">Creación</div><div class="cell-val">12/03/2026 – 08:39am</div></div>
+          <div><div class="tiempo-row"><div class="tiempo-dot"></div>2 hrs</div></div>
+          <div><button class="btn-consultar" onclick="event.stopPropagation();goTo('s2')">Consultar</button></div>
+        </div>
+
+        <div class="list-row" onclick="goTo('s2')">
+          <div><div class="bbx-id">BBX°2041</div><div class="bbx-sub">🇨🇴🇨🇱 Varios países</div></div>
+          <div><div class="cell-lbl">Cliente</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Solicitado por</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Herramientas por evaluar</div><div class="cell-val" style="font-weight:600;">20</div></div>
+          <div><div class="cell-lbl">Creación</div><div class="cell-val">12/03/2026 – 08:39am</div></div>
+          <div><div class="tiempo-row"><div class="tiempo-dot"></div>2 hrs</div></div>
+          <div><button class="btn-consultar" onclick="event.stopPropagation();goTo('s2')">Consultar</button></div>
+        </div>
+
+        <div class="list-row" onclick="goTo('s2')">
+          <div><div class="bbx-id">BBX°2041</div><div class="bbx-sub">🇨🇴🇨🇱 Varios países</div></div>
+          <div><div class="cell-lbl">Cliente</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Solicitado por</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Herramientas por evaluar</div><div class="cell-val" style="font-weight:600;">20</div></div>
+          <div><div class="cell-lbl">Creación</div><div class="cell-val">12/03/2026 – 08:39am</div></div>
+          <div><div class="tiempo-row"><div class="tiempo-dot"></div>2 hrs</div></div>
+          <div><button class="btn-consultar" onclick="event.stopPropagation();goTo('s2')">Consultar</button></div>
+        </div>
+
+        <div class="list-row" onclick="goTo('s2')">
+          <div><div class="bbx-id">BBX°2041</div><div class="bbx-sub">🇨🇴🇨🇱 Varios países</div></div>
+          <div><div class="cell-lbl">Cliente</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Solicitado por</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Herramientas por evaluar</div><div class="cell-val" style="font-weight:600;">20</div></div>
+          <div><div class="cell-lbl">Creación</div><div class="cell-val">12/03/2026 – 08:39am</div></div>
+          <div><div class="tiempo-row"><div class="tiempo-dot"></div>2 hrs</div></div>
+          <div><button class="btn-consultar" onclick="event.stopPropagation();goTo('s2')">Consultar</button></div>
+        </div>
+
+        <div class="list-row" onclick="goTo('s2')">
+          <div><div class="bbx-id">BBX°2041</div><div class="bbx-sub">🇲🇽 México</div></div>
+          <div><div class="cell-lbl">Cliente</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Solicitado por</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Herramientas por evaluar</div><div class="cell-val" style="font-weight:600;">20</div></div>
+          <div><div class="cell-lbl">Creación</div><div class="cell-val">12/03/2026 – 08:39am</div></div>
+          <div><div class="tiempo-row"><div class="tiempo-dot"></div>2 hrs</div></div>
+          <div><button class="btn-consultar" onclick="event.stopPropagation();goTo('s2')">Consultar</button></div>
+        </div>
+
+        <div class="list-row" onclick="goTo('s2')">
+          <div><div class="bbx-id">BBX°2041</div><div class="bbx-sub">🇲🇽 México</div></div>
+          <div><div class="cell-lbl">Cliente</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Solicitado por</div><div class="cell-val"><div class="co-logo">🍊</div>Zeplin, Inc.</div></div>
+          <div><div class="cell-lbl">Herramientas por evaluar</div><div class="cell-val" style="font-weight:600;">20</div></div>
+          <div><div class="cell-lbl">Creación</div><div class="cell-val">12/03/2026 – 08:39am</div></div>
+          <div><div class="tiempo-row"><div class="tiempo-dot"></div>2 hrs</div></div>
+          <div><button class="btn-consultar" onclick="event.stopPropagation();goTo('s2')">Consultar</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 2 — Detalle del buyback
+════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="sidebar">
+    <div class="logo"><div class="logo-dot"></div><div class="logo-text">bord</div></div>
+    <div class="nav">
+      <div class="nav-item">🏠 Home</div>
+      <div class="nav-section">
+        <div class="nav-section-header"><span>Operaciones</span><span>∧</span></div>
+        <div class="nav-sub">
+          <div class="nav-item active">📋 Cotizaciones</div>
+          <div class="nav-item">📦 Órdenes</div>
+          <div class="nav-item">🚚 Servicios Logs.</div>
+          <div class="nav-item">🏪 Stock propio</div>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-header"><span>Catálogo</span><span>∨</span></div>
+        <div class="nav-sub">
+          <div class="nav-item">Herramientas</div>
+          <div class="nav-item">Facturación</div>
+          <div class="nav-item">Empresas</div>
+          <div class="nav-item">Países</div>
+          <div class="nav-item">Cargue masivo</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar-wrap"><div class="avatar-initials">SS</div></div>
+      <div class="footer-info"><div class="footer-name">Sebas Spinel</div><div class="footer-role">Procurement</div></div>
+      <div class="footer-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-breadcrumb">
+        <a onclick="goTo('s1')">Buyback</a>
+        <span class="sep">/</span>
+        <strong>Detalle del buyback</strong>
+      </div>
+      <div class="tb-right">
+        <div class="tb-icon-btn">
+          <div class="notif-badge"></div>
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Quote header card -->
+      <div class="detail-card">
+        <div class="qd-top">
+          <div>
+            <div class="qd-title-row">
+              <div class="qd-title">Buyback N°1234</div>
+              <div class="status-pill sp-yellow"><span class="sp-dot"></span>Por cotizar<span class="sp-arr">▾</span></div>
+            </div>
+            <div class="qd-meta">
+              <span>País: <b>Varios</b> 🇦🇷🇨🇴🇲🇽</span>
+              <span class="meta-sep">|</span>
+              <span>Creación: <b>12/03/2026</b></span>
+            </div>
+          </div>
+          <div class="update-box">
+            <div class="update-lbl">Última acualización</div>
+            <div class="update-inner">
+              <div class="update-icon">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div class="update-texts">
+                <div class="update-desc">Description</div>
+                <div class="update-date"><div class="update-online"></div>00/00/0000 – 00:00 PM</div>
+              </div>
+              <button class="btn-ver-hist">Ver historial</button>
+            </div>
+          </div>
+        </div>
+        <hr class="divider"/>
+        <div class="client-row">
+          <div class="client-logo">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="client-name-col">
+            <div class="cl-company">Cliente Standard</div>
+            <div class="cl-name">Playtoy <a class="cl-link">↗</a></div>
+          </div>
+          <div class="fields-row">
+            <div class="field">
+              <div class="field-lbl">Solicitante</div>
+              <div class="field-val">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                Vicente
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-lbl">Número de Contacto</div>
+              <div class="field-val">+52 5556747758</div>
+            </div>
+            <div class="field">
+              <div class="field-lbl">Correo</div>
+              <div class="field-val">claudia@playtoy.com</div>
+            </div>
+          </div>
+          <button class="btn-agregar">Agregar responsables <span style="font-size:15px;font-weight:300;line-height:1;">⊕</span></button>
+        </div>
+      </div>
+
+      <!-- SLA banner -->
+      <div class="sla-banner">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#3b82f6" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        SLA de la cotización: 24 horas – <b>2 horas transcurridas</b>
+      </div>
+
+      <!-- Body -->
+      <div class="body-layout">
+        <!-- Devices -->
+        <div class="devices-col">
+          <div class="devices-panel">
+            <div class="dp-header">
+              <div class="dp-title">Herramientas a cotizar</div>
+              <div class="dp-sep"></div>
+              <div class="dp-count" id="dp-count">12 herramientas en 3 países</div>
+            </div>
+            <div class="devices-scroll" id="devices-list">
+              <!-- Argentina -->
+              <div class="country-block">
+                <div class="country-hdr">🇦🇷 Argentina <span class="country-cnt">(4)</span> <span class="chev">∧</span></div>
+                <div class="device-card" data-idx="0" onclick="openModal(0)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info">
+                    <div class="dc-name">Lenovo ThinkPad X1 Carbon</div>
+                    <div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div>
+                  </div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="1" onclick="openModal(1)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon</div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="2" onclick="openModal(2)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon</div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="3" onclick="openModal(3)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon</div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Colombia -->
+              <div class="country-block" style="border-top:1px solid #f4f4f5;">
+                <div class="country-hdr">🇨🇴 Colombia <span class="country-cnt">(3)</span> <span class="chev">∧</span></div>
+                <div class="device-card" data-idx="4" onclick="openModal(4)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"</div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="5" onclick="openModal(5)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"</div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="6" onclick="openModal(6)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"</div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+              </div>
+              <!-- México -->
+              <div class="country-block" style="border-top:1px solid #f4f4f5;">
+                <div class="country-hdr">🇲🇽 México <span class="country-cnt">(5)</span> <span class="chev">∧</span></div>
+                <div class="device-card" data-idx="7" onclick="openModal(7)">
+                  <div class="dc-thumb">📱</div>
+                  <div class="dc-info"><div class="dc-name">iPhone 15 Pro</div><div class="dc-badges"><span class="dc-badge">256GB</span><span class="dc-badge">Titanio</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Smartphones</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="8" onclick="openModal(8)">
+                  <div class="dc-thumb">📱</div>
+                  <div class="dc-info"><div class="dc-name">iPhone 15 Pro</div><div class="dc-badges"><span class="dc-badge">256GB</span><span class="dc-badge">Titanio</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Smartphones</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="9" onclick="openModal(9)">
+                  <div class="dc-thumb">📱</div>
+                  <div class="dc-info"><div class="dc-name">iPad Pro 12.9"</div><div class="dc-badges"><span class="dc-badge">M2</span><span class="dc-badge">256GB</span><span class="dc-badge">WiFi</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Tablets</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="10" onclick="openModal(10)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">Dell XPS 15</div><div class="dc-badges"><span class="dc-badge">i9</span><span class="dc-badge">32GB</span><span class="dc-badge">1TB</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+                <div class="device-card" data-idx="11" onclick="openModal(11)">
+                  <div class="dc-thumb">💻</div>
+                  <div class="dc-info"><div class="dc-name">Dell XPS 15</div><div class="dc-badges"><span class="dc-badge">i9</span><span class="dc-badge">32GB</span><span class="dc-badge">1TB</span></div></div>
+                  <div class="dc-cols">
+                    <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
+                    <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
+                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-col">
+          <div class="summary-card">
+            <div class="sc-icon">📋</div>
+            <div class="sc-title">Resumen de la oferta de compra</div>
+            <hr class="sc-divider"/>
+            <div class="sc-row">
+              <span class="sc-lbl">Herramientas cotizadas</span>
+              <span class="sc-val" id="sc-count">0 de 12</span>
+            </div>
+            <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+            <button class="btn-empezar" onclick="openModal(0)">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Empezar cotización
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal backdrop -->
+  <div class="modal-backdrop" id="mb" onclick="closeModal()"></div>
+
+  <!-- Modal panel — slide from right -->
+  <div class="modal-panel" id="modal">
+    <div class="mp-top">
+      <div class="mp-counter-row">
+        <div class="mp-counter" id="mp-counter">Herramienta 1 de 12</div>
+        <button class="mp-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="mp-device-row">
+        <div class="mp-thumb" id="mp-thumb">💻</div>
+        <div>
+          <div class="mp-name" id="mp-name">Título</div>
+          <div class="mp-sku" id="mp-sku">||| Subtítulo</div>
+          <div class="mp-badges" id="mp-badges"></div>
+        </div>
+      </div>
+      <!-- Segmented tabs -->
+      <div class="mp-tabs">
+        <div class="mp-tab active" onclick="switchTab(this,'tab-general')">General</div>
+        <div class="mp-tab" onclick="switchTab(this,'tab-info')">Info. de la herramienta</div>
+        <div class="mp-tab" onclick="switchTab(this,'tab-hist')">Historial</div>
+      </div>
+    </div>
+
+    <div class="mp-body">
+      <!-- Tab General -->
+      <div id="tab-general">
+        <div class="mp-section">
+          <div class="mp-row"><span class="mp-row-lbl">Slotting</span><span class="mp-row-val">A5</span></div>
+          <div class="mp-row"><span class="mp-row-lbl">Herramienta de</span><span class="mp-row-val" style="display:flex;align-items:center;gap:5px;"><span style="font-size:14px;">🍊</span>Zeplin, Inc.</span></div>
+          <div class="mp-row"><span class="mp-row-lbl">Estado del inventario</span><span class="mp-row-val">Almacenado</span></div>
+          <div class="mp-row"><span class="mp-row-lbl">Serial</span><span class="mp-row-val mono">0e85c28c-b073-4731-8bda-56d0eea000a6</span></div>
+          <div class="mp-row"><span class="mp-row-lbl">SKU</span><span class="mp-row-val mono">LAPP-MACAIR-13-M4-16-512-0001</span></div>
+          <div class="mp-row">
+            <span class="mp-row-lbl">Estado:</span>
+            <span class="mp-row-val green-dot"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;"></span>Disponible</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Info herramienta -->
+      <div id="tab-info" style="display:none;">
+        <div class="mp-section">
+          <div class="mp-row"><span class="mp-row-lbl">Tiene Stickers</span><div class="toggle-sw no"><span class="toggle-sw-label">NO</span></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Esta limpio</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Incluye cable</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Incluye adaptador</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Incluye caja</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Tiene caja original</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Enciende</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Pantalla funcional</span><div class="toggle-sw sí"></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Teclado funcional</span><div class="toggle-sw no"><span class="toggle-sw-label">NO</span></div></div>
+          <div class="mp-row"><span class="mp-row-lbl">Sistema operativo funcional</span><span class="mp-row-val">MacOS</span></div>
+          <div class="mp-row"><span class="mp-row-lbl">Idioma</span><span class="mp-row-val">Español</span></div>
+          <div class="mp-row"><span class="mp-row-lbl">Condición Cargador:</span><span class="mp-row-val">No incluye</span></div>
+        </div>
+        <div class="mp-photos">
+          <div class="mp-photos-lbl">Fotos de la herramienta</div>
+          <div class="photos-grid">
+            <div class="ph-thumb">📷</div><div class="ph-thumb">📷</div><div class="ph-thumb">📷</div>
+            <div class="ph-thumb">📷</div><div class="ph-thumb">📷</div><div class="ph-thumb">📷</div>
+            <div class="ph-thumb">📷</div><div class="ph-thumb">📷</div>
+          </div>
+          <button class="btn-cambiar" style="display:none;">↺ Cambiar fotos subidas</button>
+        </div>
+
+        <button class="btn-download">Descargar ult. inspección ↓</button>
+      </div>
+
+      <!-- Tab Historial -->
+      <div id="tab-hist" style="display:none;">
+        <div class="hist-group">
+          <div class="hg-hdr">
+            <div class="hg-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="hg-title">Almacenada</div>
+          </div>
+          <div class="hg-events">
+            <div class="hg-event">
+              <div>
+                <div class="hg-event-title">La herramienta esta almacenada <span class="hg-event-date">DD/MM/YYYY – 00:00 AM / PM</span></div>
+                <div class="hg-event-body">Se ha almacenado correctamente en el Slotting A1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="hist-sep"/>
+        <div class="hist-group">
+          <div class="hg-hdr">
+            <div class="hg-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="hg-title">Configuración</div>
+          </div>
+          <div class="hg-events">
+            <div class="hg-event red">
+              <div>
+                <div class="hg-event-title red">Bitlocker – No completado <span class="hg-event-date">DD/MM/YYYY – 00:00 AM / PM</span></div>
+                <div class="hg-event-body red">La configuración [nombre] fue marcada como no completada por [usuario WMS]. Bloqueado por [Razones]</div>
+              </div>
+            </div>
+            <div class="hg-event">
+              <div>
+                <div class="hg-event-title">Creación Admin <span class="hg-event-date">DD/MM/YYYY – 00:00 AM / PM</span></div>
+                <div class="hg-event-body">La configuración [nombre] fue marcada como completada por [usuario WMS]</div>
+              </div>
+            </div>
+            <div class="hg-event">
+              <div>
+                <div class="hg-event-title">Pendiente de configurar <span class="hg-event-date">DD/MM/YYYY – 00:00 AM / PM</span></div>
+                <div class="hg-event-body">La herramienta esta lista para empezar con la configuración</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="hist-sep"/>
+        <div class="hist-group">
+          <div class="hg-hdr">
+            <div class="hg-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="hg-title">Cargar DSN</div>
+          </div>
+          <div class="hg-events">
+            <div class="hg-event">
+              <div>
+                <div class="hg-event-title">DSN Cargado <span class="hg-event-date">DD/MM/YYYY – 00:00 AM / PM</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer fijo -->
+    <div class="mp-footer">
+      <!-- CTO toggle -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;border-bottom:1px solid #f4f4f5;margin-bottom:12px;">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:#18181b;">Marcar como CTO</div>
+          <div style="font-size:11px;color:#a1a1aa;margin-top:1px;">Extiende el SLA del BBX completo a 72h hábiles</div>
+        </div>
+        <div id="cto-toggle" onclick="toggleCTO()" style="width:36px;height:20px;border-radius:10px;background:#d1d5db;position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;">
+          <div id="cto-knob" style="position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div>
+        </div>
+      </div>
+      <div class="mp-price-row">
+        <div class="price-left">
+          <div class="price-lbl">Precio de mercado</div>
+          <div class="price-suggested" id="mp-price-suggested">—</div>
+          <div class="price-hint" id="mp-price-hint">Precio de venta en tienda (platinum). IVA incluido en precio final.</div>
+        </div>
+        <div class="price-right">
+          <div class="price-lbl">Precio final (USD, IVA incluido)</div>
+          <input class="price-input" id="price-input" type="text" placeholder="Ingresa el precio final en USD..." oninput="onPriceInput()"/>
+        </div>
+      </div>
+      <div class="mp-actions">
+        <button class="btn-rechazar" onclick="openRechazo()">Rechazar</button>
+        <button class="btn-marcar" id="btn-marcar" onclick="markQuoted()" disabled style="opacity:.4;cursor:not-allowed;">Cotizar herramienta</button>
+        <button class="btn-enviar" id="btn-enviar" style="display:none;" onclick="showToast('✅ Oferta enviada al cliente')">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Enviar oferta
+        </button>
+      </div>
+    </div>
+
+    <!-- Mini-modal de rechazo (dentro del panel) -->
+    <div id="rechazo-overlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:10;border-radius:inherit;align-items:center;justify-content:center;">
+      <div style="background:#fff;border-radius:12px;padding:24px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.18);">
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Rechazado por Bord</div>
+        <div style="font-size:13px;color:#71717a;margin-bottom:16px;">¿Por qué no se oferta esta herramienta?</div>
+        <div id="razon-1" class="razon-opt" onclick="selectRazon(1)" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid #e4e4e7;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .12s;">
+          <div class="razon-radio" style="width:16px;height:16px;border-radius:50%;border:2px solid #d4d4d8;flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">No hay precio de referencia disponible</div>
+            <div style="font-size:11px;color:#a1a1aa;">El SKU no está activo en tienda para este país</div>
+          </div>
+        </div>
+        <div id="razon-2" class="razon-opt" onclick="selectRazon(2)" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid #e4e4e7;border-radius:8px;margin-bottom:16px;cursor:pointer;transition:all .12s;">
+          <div class="razon-radio" style="width:16px;height:16px;border-radius:50%;border:2px solid #d4d4d8;flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">Equipo en condición no aceptable</div>
+            <div style="font-size:11px;color:#a1a1aa;">El estado físico del equipo no justifica la compra</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="closeRechazo()" style="flex:1;padding:9px;border:1px solid #e4e4e7;border-radius:7px;background:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;color:#52525b;">Cancelar</button>
+          <button id="btn-confirmar-rechazo" onclick="confirmRechazo()" disabled style="flex:1;padding:9px;border:none;border-radius:7px;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:not-allowed;opacity:.4;font-family:'Inter',sans-serif;">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- nav dots -->
+<div class="nav-dots">
+  <div class="ndot active" onclick="goTo('s1')"></div>
+  <div class="ndot" onclick="goTo('s2')"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOOLS = [
+  {name:'Lenovo ThinkPad X1 Carbon', sku:'LAPP-LENOVO-X1C-I7-1TB-16-0001', badges:['i7','1TB SSD','16GB'], icon:'💻', condition:'Usado como nuevo', marketPrice: 1200, suggestedPct: 0.25},
+  {name:'Lenovo ThinkPad X1 Carbon', sku:'LAPP-LENOVO-X1C-I7-1TB-16-0002', badges:['i7','1TB SSD','16GB'], icon:'💻', condition:'Usado como nuevo', marketPrice: 1200, suggestedPct: 0.25},
+  {name:'Lenovo ThinkPad X1 Carbon', sku:'LAPP-LENOVO-X1C-I7-1TB-16-0003', badges:['i7','1TB SSD','16GB'], icon:'💻', condition:'Usado bueno',      marketPrice: 1200, suggestedPct: 0.10},
+  {name:'Lenovo ThinkPad X1 Carbon', sku:'LAPP-LENOVO-X1C-I7-1TB-16-0004', badges:['i7','1TB SSD','16GB'], icon:'💻', condition:'Usado regular',     marketPrice: 1200, suggestedPct: 0.05},
+  {name:'MacBook Pro 16"',           sku:'LAPP-MACAIR-13-M4-16-512-0001',  badges:['M3 Pro','18 GB','512 GB SSD'], icon:'💻', condition:'Usado como nuevo', marketPrice: 3200, suggestedPct: 0.25},
+  {name:'MacBook Pro 16"',           sku:'LAPP-MACAIR-13-M4-16-512-0002',  badges:['M3 Pro','18 GB','512 GB SSD'], icon:'💻', condition:'Usado como nuevo', marketPrice: 3200, suggestedPct: 0.25},
+  {name:'MacBook Pro 16"',           sku:'LAPP-MACAIR-13-M4-16-512-0003',  badges:['M3 Pro','18 GB','512 GB SSD'], icon:'💻', condition:'Usado bueno',      marketPrice: 3200, suggestedPct: 0.10},
+  {name:'iPhone 15 Pro',             sku:'SMRT-APPL-IPH15P-256-0001',      badges:['256GB','Titanio'], icon:'📱', condition:'Usado como nuevo', marketPrice: 900,  suggestedPct: 0.25},
+  {name:'iPhone 15 Pro',             sku:'SMRT-APPL-IPH15P-256-0002',      badges:['256GB','Titanio'], icon:'📱', condition:'Usado bueno',      marketPrice: 900,  suggestedPct: 0.10},
+  {name:'iPad Pro 12.9"',            sku:'TABL-APPL-IPADP-M2-256-0001',   badges:['M2','256GB','WiFi'], icon:'📱', condition:'Usado como nuevo', marketPrice: null, suggestedPct: null}, // sin precio de referencia
+  {name:'Dell XPS 15',               sku:'LAPP-DELL-XPS15-I9-32-1TB-0001',badges:['i9','32GB','1TB'], icon:'💻', condition:'Usado bueno',      marketPrice: 1800, suggestedPct: 0.10},
+  {name:'Dell XPS 15',               sku:'LAPP-DELL-XPS15-I9-32-1TB-0002',badges:['i9','32GB','1TB'], icon:'💻', condition:'Usado regular',     marketPrice: 1800, suggestedPct: 0.05},
+];
+let currentIdx = 0;
+const quoted = new Set();   // herramientas cotizadas
+const rejected = new Set(); // herramientas rechazadas
+let selectedRazon = null;
+
+/* ── Navegación ── */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const n=parseInt(id.replace('s',''))-1;
+  document.querySelectorAll('.ndot').forEach((d,i)=>d.classList.toggle('active',i===n));
+  closeModal();
+}
+
+/* ── Modal principal ── */
+function openModal(idx){
+  currentIdx = idx;
+  fillModal();
+  document.getElementById('mb').classList.add('open');
+  document.getElementById('modal').classList.add('open');
+  resetTabs();
+  highlightRow(idx);
+}
+
+function fillModal(){
+  const t = TOOLS[currentIdx];
+  const isQuoted   = quoted.has(currentIdx);
+  const isRejected = rejected.has(currentIdx);
+
+  document.getElementById('mp-counter').textContent = `Herramienta ${currentIdx+1} de ${TOOLS.length}`;
+  document.getElementById('mp-thumb').textContent = t.icon;
+  document.getElementById('mp-name').textContent = t.name;
+  document.getElementById('mp-sku').textContent = '||| ' + t.sku;
+  document.getElementById('mp-badges').innerHTML = t.badges.map(b=>
+    `<span class="mp-badge">${b}</span>`).join('');
+
+  // precio de mercado precargado desde la herramienta
+  const priceEl = document.getElementById('mp-price-suggested');
+  const hintEl  = document.getElementById('mp-price-hint');
+  const priceInput = document.getElementById('price-input');
+
+  if(t.marketPrice){
+    const suggested = Math.round(t.marketPrice * t.suggestedPct);
+    const pctLabel  = Math.round(t.suggestedPct * 100) + '%';
+    priceEl.textContent = '$' + t.marketPrice.toLocaleString('en') + ' USD';
+    priceEl.style.color = '#18181b';
+    hintEl.textContent  = `Precio platinum · ${t.condition} → sugerido ${pctLabel}: $${suggested.toLocaleString('en')} USD`;
+    priceInput.placeholder = `Ej: $${suggested.toLocaleString('en')} USD`;
+  } else {
+    priceEl.textContent = 'Sin referencia';
+    priceEl.style.color = '#a1a1aa';
+    hintEl.textContent  = 'SKU no está activo en tienda para este país';
+    priceInput.placeholder = 'Ingresa el precio final en USD...';
+  }
+
+  priceInput.value = '';
+  priceInput.disabled = isQuoted || isRejected;
+
+  // botón marcar
+  const btn = document.getElementById('btn-marcar');
+  if(isQuoted){
+    btn.textContent = '✓ Cotizada';
+    btn.disabled = true;
+    btn.style.opacity = '.45';
+    btn.style.cursor = 'not-allowed';
+  } else if(isRejected){
+    btn.textContent = 'Rechazado por Bord';
+    btn.disabled = true;
+    btn.style.opacity = '.45';
+    btn.style.cursor = 'not-allowed';
+  } else {
+    btn.textContent = 'Cotizar herramienta';
+    btn.disabled = true;
+    btn.style.opacity = '.4';
+    btn.style.cursor = 'not-allowed';
+  }
+
+  // botón enviar — solo si TODAS están resueltas (cotizadas o rechazadas)
+  updateEnviarBtn();
+}
+
+function onPriceInput(){
+  const val = document.getElementById('price-input').value.trim();
+  const btn = document.getElementById('btn-marcar');
+  const isResolved = quoted.has(currentIdx) || rejected.has(currentIdx);
+  if(!isResolved){
+    const hasValue = val.length > 0;
+    btn.disabled = !hasValue;
+    btn.style.opacity = hasValue ? '1' : '.4';
+    btn.style.cursor  = hasValue ? 'pointer' : 'not-allowed';
+  }
+}
+
+/* ── CTO toggle ── */
+let ctoActive = false;
+function toggleCTO(){
+  ctoActive = !ctoActive;
+  const toggle = document.getElementById('cto-toggle');
+  const knob   = document.getElementById('cto-knob');
+  if(toggle && knob){
+    toggle.style.background = ctoActive ? '#059669' : '#d1d5db';
+    knob.style.left = ctoActive ? '18px' : '2px';
+  }
+  showToast(ctoActive ? '⏱ SLA extendido a 72h hábiles' : 'SLA vuelve a 24h hábiles');
+}
+
+function highlightRow(idx){
+  document.querySelectorAll('.device-card').forEach((c,i)=>{
+    c.classList.toggle('active-card', i===idx);
+  });
+}
+
+function closeModal(){
+  document.getElementById('mb').classList.remove('open');
+  document.getElementById('modal').classList.remove('open');
+  document.querySelectorAll('.device-card').forEach(c=>c.classList.remove('active-card'));
+  closeRechazo();
+}
+
+function resetTabs(){
+  document.querySelectorAll('.mp-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.mp-tab')[0].classList.add('active');
+  ['tab-general','tab-info','tab-hist'].forEach(id=>{
+    document.getElementById(id).style.display = id==='tab-general' ? '' : 'none';
+  });
+}
+
+function switchTab(el, tabId){
+  document.querySelectorAll('.mp-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['tab-general','tab-info','tab-hist'].forEach(id=>{
+    document.getElementById(id).style.display = id===tabId ? '' : 'none';
+  });
+}
+
+/* ── Cotizar herramienta ── */
+function markQuoted(){
+  const btn = document.getElementById('btn-marcar');
+  if(btn.disabled) return;
+  if(quoted.has(currentIdx)) return;
+
+  quoted.add(currentIdx);
+
+  // actualizar fila en la lista
+  const cards = document.querySelectorAll('.device-card');
+  const statusEl = cards[currentIdx]?.querySelector('.dc-status');
+  if(statusEl) statusEl.innerHTML='<span class="st-dot green"></span><span class="st-text green">Cotizada</span>';
+
+  updateProgress();
+  showToast('✓ Cotizada');
+
+  const next = findNext();
+  if(next !== null){
+    animateToNext(next);
+  } else {
+    // todas resueltas
+    setTimeout(()=>{
+      closeModal();
+      updateEnviarBtn(true);
+      showToast('🎉 ¡¡Todas las herramientas evaluadas!!');
+    }, 200);
+  }
+}
+
+function updateProgress(){
+  const resolved = quoted.size + rejected.size;
+  const pct = (resolved / TOOLS.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('sc-count').textContent = `${quoted.size} de ${TOOLS.length}`;
+}
+
+function updateEnviarBtn(forceShow){
+  const allResolved = (quoted.size + rejected.size) === TOOLS.length;
+  const btn = document.getElementById('btn-enviar');
+  if(allResolved || forceShow){
+    btn.style.display = 'flex';
+  }
+}
+
+function findNext(){
+  // busca siguiente sin resolver (ni cotizado ni rechazado)
+  for(let i=currentIdx+1;i<TOOLS.length;i++) if(!quoted.has(i) && !rejected.has(i)) return i;
+  for(let i=0;i<currentIdx;i++)              if(!quoted.has(i) && !rejected.has(i)) return i;
+  return null;
+}
+
+function animateToNext(next){
+  const body = document.querySelector('.mp-body');
+  const top  = document.querySelector('.mp-top');
+  [body,top].forEach(el=>{
+    el.style.transition = 'opacity .13s ease, transform .13s ease';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-8px)';
+  });
+  setTimeout(()=>{
+    currentIdx = next;
+    fillModal();
+    highlightRow(next);
+    resetTabs();
+    [body,top].forEach(el=>{ el.style.transform='translateY(10px)'; });
+    requestAnimationFrame(()=>{
+      [body,top].forEach(el=>{
+        el.style.transition = 'opacity .16s ease, transform .16s ease';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      });
+    });
+  }, 140);
+}
+
+/* ── Rechazo ── */
+function openRechazo(){
+  selectedRazon = null;
+  // reset opciones
+  [1,2].forEach(n=>{
+    const opt = document.getElementById(`razon-${n}`);
+    opt.style.borderColor = '#e4e4e7';
+    opt.querySelector('.razon-radio').style.borderColor = '#d4d4d8';
+    opt.querySelector('.razon-radio').style.background = '#fff';
+  });
+  const confirmBtn = document.getElementById('btn-confirmar-rechazo');
+  confirmBtn.disabled = true;
+  confirmBtn.style.opacity = '.4';
+  confirmBtn.style.cursor = 'not-allowed';
+
+  const overlay = document.getElementById('rechazo-overlay');
+  overlay.style.display = 'flex';
+}
+
+function closeRechazo(){
+  const overlay = document.getElementById('rechazo-overlay');
+  if(overlay) overlay.style.display = 'none';
+  selectedRazon = null;
+}
+
+function selectRazon(n){
+  selectedRazon = n;
+  [1,2].forEach(i=>{
+    const opt = document.getElementById(`razon-${i}`);
+    const radio = opt.querySelector('.razon-radio');
+    if(i === n){
+      opt.style.borderColor = '#059669';
+      radio.style.borderColor = '#059669';
+      radio.style.background = '#059669';
+    } else {
+      opt.style.borderColor = '#e4e4e7';
+      radio.style.borderColor = '#d4d4d8';
+      radio.style.background = '#fff';
+    }
+  });
+  const confirmBtn = document.getElementById('btn-confirmar-rechazo');
+  confirmBtn.disabled = false;
+  confirmBtn.style.opacity = '1';
+  confirmBtn.style.cursor = 'pointer';
+}
+
+function confirmRechazo(){
+  if(!selectedRazon) return;
+  closeRechazo();
+
+  rejected.add(currentIdx);
+
+  // actualizar fila en la lista
+  const cards = document.querySelectorAll('.device-card');
+  const statusEl = cards[currentIdx]?.querySelector('.dc-status');
+  if(statusEl) statusEl.innerHTML='<span class="st-dot" style="background:#ef4444;"></span><span class="st-text" style="color:#dc2626;">Rechazado por Bord</span>';
+
+  updateProgress();
+  showToast('Rechazado por Bord');
+
+  const next = findNext();
+  if(next !== null){
+    animateToNext(next);
+  } else {
+    setTimeout(()=>{
+      closeModal();
+      updateEnviarBtn(true);
+      showToast('🎉 ¡¡Todas las herramientas evaluadas!!');
+    }, 200);
+  }
+}
+
+/* ── Toast ── */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
