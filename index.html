@@ -153,7 +153,15 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
 .dc-thumb{width:56px;height:56px;border-radius:7px;background:#f4f4f5;border:1px solid #e4e4e7;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden;}
 .dc-thumb img{width:100%;height:100%;object-fit:cover;}
 .dc-info{min-width:0;}
-.dc-name{font-size:13px;font-weight:600;margin-bottom:5px;}
+.dc-name{font-size:13px;font-weight:600;margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+.dc-inline-status{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid;flex-shrink:0;}
+.dc-inline-status .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dc-inline-status.yellow{border-color:#f59e0b;color:#d97706;background:#fffbeb;}
+.dc-inline-status.yellow .dot{background:#f59e0b;}
+.dc-inline-status.green{border-color:#22c55e;color:#16a34a;background:#f0fdf4;}
+.dc-inline-status.green .dot{background:#22c55e;}
+.dc-inline-status.red{border-color:#ef4444;color:#dc2626;background:#fef2f2;}
+.dc-inline-status.red .dot{background:#ef4444;}
 .dc-badges{display:flex;gap:4px;flex-wrap:wrap;}
 .dc-badge{padding:2px 7px;border-radius:5px;font-size:11px;font-weight:500;background:#f4f4f5;color:#52525b;border:1px solid #e4e4e7;}
 .dc-cols{display:flex;gap:20px;align-items:center;}
@@ -195,6 +203,10 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
 /* modal header */
 .mp-top{padding:16px 20px 14px;border-bottom:1px solid #f4f4f5;}
 .mp-counter-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.mp-nav-arrow{width:26px;height:26px;border-radius:6px;border:1px solid #e4e4e7;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#52525b;transition:all .12s;flex-shrink:0;}
+.mp-nav-arrow:hover{background:#f4f4f5;color:#18181b;}
+.mp-nav-arrow:disabled{opacity:.35;cursor:not-allowed;}
+.mp-nav-arrow:disabled:hover{background:#fff;color:#52525b;}
 .mp-counter{font-size:12px;font-weight:500;color:#a1a1aa;}
 .mp-close{width:28px;height:28px;border-radius:6px;border:1px solid #e4e4e7;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#71717a;font-size:15px;transition:all .12s;}
 .mp-close:hover{background:#f4f4f5;color:#18181b;}
@@ -621,40 +633,40 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
                 <div class="device-card" data-idx="0" onclick="openModal(0)">
                   <div class="dc-thumb">💻</div>
                   <div class="dc-info">
-                    <div class="dc-name">Lenovo ThinkPad X1 Carbon</div>
+                    <div class="dc-name">Lenovo ThinkPad X1 Carbon<span class="dc-inline-status yellow" id="inline-status-0"><span class="dot"></span>Por cotizar</span></div>
                     <div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div>
                   </div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="1" onclick="openModal(1)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon</div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
+                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon<span class="dc-inline-status yellow" id="inline-status-1"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="2" onclick="openModal(2)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon</div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
+                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon<span class="dc-inline-status yellow" id="inline-status-2"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="3" onclick="openModal(3)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon</div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
+                  <div class="dc-info"><div class="dc-name">Lenovo ThinkPad X1 Carbon<span class="dc-inline-status yellow" id="inline-status-3"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">i7</span><span class="dc-badge">1TB SSD</span><span class="dc-badge">16GB</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
               </div>
@@ -663,29 +675,29 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
                 <div class="country-hdr">🇨🇴 Colombia <span class="country-cnt">(3)</span> <span class="chev">∧</span></div>
                 <div class="device-card" data-idx="4" onclick="openModal(4)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"</div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
+                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"<span class="dc-inline-status yellow" id="inline-status-4"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="5" onclick="openModal(5)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"</div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
+                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"<span class="dc-inline-status yellow" id="inline-status-5"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="6" onclick="openModal(6)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"</div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
+                  <div class="dc-info"><div class="dc-name">MacBook Pro 16"<span class="dc-inline-status yellow" id="inline-status-6"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">M3 Pro</span><span class="dc-badge">18 GB</span><span class="dc-badge">512 GB SSD</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
               </div>
@@ -694,47 +706,47 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
                 <div class="country-hdr">🇲🇽 México <span class="country-cnt">(5)</span> <span class="chev">∧</span></div>
                 <div class="device-card" data-idx="7" onclick="openModal(7)">
                   <div class="dc-thumb">📱</div>
-                  <div class="dc-info"><div class="dc-name">iPhone 15 Pro</div><div class="dc-badges"><span class="dc-badge">256GB</span><span class="dc-badge">Titanio</span></div></div>
+                  <div class="dc-info"><div class="dc-name">iPhone 15 Pro<span class="dc-inline-status yellow" id="inline-status-7"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">256GB</span><span class="dc-badge">Titanio</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Smartphones</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="8" onclick="openModal(8)">
                   <div class="dc-thumb">📱</div>
-                  <div class="dc-info"><div class="dc-name">iPhone 15 Pro</div><div class="dc-badges"><span class="dc-badge">256GB</span><span class="dc-badge">Titanio</span></div></div>
+                  <div class="dc-info"><div class="dc-name">iPhone 15 Pro<span class="dc-inline-status yellow" id="inline-status-8"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">256GB</span><span class="dc-badge">Titanio</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Smartphones</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="9" onclick="openModal(9)">
                   <div class="dc-thumb">📱</div>
-                  <div class="dc-info"><div class="dc-name">iPad Pro 12.9"</div><div class="dc-badges"><span class="dc-badge">M2</span><span class="dc-badge">256GB</span><span class="dc-badge">WiFi</span></div></div>
+                  <div class="dc-info"><div class="dc-name">iPad Pro 12.9"<span class="dc-inline-status yellow" id="inline-status-9"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">M2</span><span class="dc-badge">256GB</span><span class="dc-badge">WiFi</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Tablets</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Usado como nuevo</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="10" onclick="openModal(10)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">Dell XPS 15</div><div class="dc-badges"><span class="dc-badge">i9</span><span class="dc-badge">32GB</span><span class="dc-badge">1TB</span></div></div>
+                  <div class="dc-info"><div class="dc-name">Dell XPS 15<span class="dc-inline-status yellow" id="inline-status-10"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">i9</span><span class="dc-badge">32GB</span><span class="dc-badge">1TB</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
                 <div class="device-card" data-idx="11" onclick="openModal(11)">
                   <div class="dc-thumb">💻</div>
-                  <div class="dc-info"><div class="dc-name">Dell XPS 15</div><div class="dc-badges"><span class="dc-badge">i9</span><span class="dc-badge">32GB</span><span class="dc-badge">1TB</span></div></div>
+                  <div class="dc-info"><div class="dc-name">Dell XPS 15<span class="dc-inline-status yellow" id="inline-status-11"><span class="dot"></span>Por cotizar</span></div><div class="dc-badges"><span class="dc-badge">i9</span><span class="dc-badge">32GB</span><span class="dc-badge">1TB</span></div></div>
                   <div class="dc-cols">
                     <div class="dc-col"><div class="dc-col-lbl">Categoría</div><div class="dc-col-val">Laptops</div></div>
                     <div class="dc-col"><div class="dc-col-lbl">Condición</div><div class="dc-col-val">Buen estado</div></div>
-                    <div class="dc-col dc-status-col"><div class="dc-col-lbl">Estado</div><div class="dc-status"><span class="st-dot yellow"></span><span class="st-text yellow">Por cotizar</span></div></div>
+                    
                   </div>
                 </div>
               </div>
@@ -770,7 +782,15 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
   <div class="modal-panel" id="modal">
     <div class="mp-top">
       <div class="mp-counter-row">
-        <div class="mp-counter" id="mp-counter">Herramienta 1 de 12</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="mp-nav-arrow" id="mp-prev" onclick="navTool(-1)" title="Herramienta anterior">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="mp-counter" id="mp-counter">Herramienta 1 de 12</div>
+          <button class="mp-nav-arrow" id="mp-next" onclick="navTool(1)" title="Siguiente herramienta">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
         <button class="mp-close" onclick="closeModal()">✕</button>
       </div>
       <div class="mp-device-row">
@@ -899,8 +919,8 @@ body{font-family:'Inter',sans-serif;background:#f4f4f5;color:#18181b;font-size:1
       <!-- CTO toggle -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;border-bottom:1px solid #f4f4f5;margin-bottom:12px;">
         <div>
-          <div style="font-size:13px;font-weight:500;color:#18181b;">Marcar como CTO</div>
-          <div style="font-size:11px;color:#a1a1aa;margin-top:1px;">Extiende el SLA del BBX completo a 72h hábiles</div>
+          <div style="font-size:13px;font-weight:500;color:#18181b;">Necesito más tiempo para ofertar</div>
+          <div style="font-size:11px;color:#a1a1aa;margin-top:1px;">Duplica el SLA del BBX completo (pendiente de confirmar con Martín)</div>
         </div>
         <div id="cto-toggle" onclick="toggleCTO()" style="width:36px;height:20px;border-radius:10px;background:#d1d5db;position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;">
           <div id="cto-knob" style="position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div>
@@ -1056,6 +1076,16 @@ function fillModal(){
 
   // botón enviar — solo si TODAS están resueltas (cotizadas o rechazadas)
   updateEnviarBtn();
+
+  // flechas de navegación (deshabilitadas en los extremos)
+  document.getElementById('mp-prev').disabled = currentIdx === 0;
+  document.getElementById('mp-next').disabled = currentIdx === TOOLS.length - 1;
+}
+
+function navTool(dir){
+  const next = currentIdx + dir;
+  if(next < 0 || next >= TOOLS.length) return;
+  animateToNext(next);
 }
 
 function onPriceInput(){
@@ -1080,13 +1110,26 @@ function toggleCTO(){
     toggle.style.background = ctoActive ? '#059669' : '#d1d5db';
     knob.style.left = ctoActive ? '18px' : '2px';
   }
-  showToast(ctoActive ? '⏱ SLA extendido a 72h hábiles' : 'SLA vuelve a 24h hábiles');
+  showToast(ctoActive ? '⏱ SLA duplicado (pendiente de confirmar)' : 'SLA vuelve al tiempo original');
 }
 
 function highlightRow(idx){
   document.querySelectorAll('.device-card').forEach((c,i)=>{
     c.classList.toggle('active-card', i===idx);
   });
+}
+
+function updateInlineStatus(idx, state){
+  // state: 'quoted' | 'rejected'
+  const el = document.getElementById(`inline-status-${idx}`);
+  if(!el) return;
+  if(state === 'quoted'){
+    el.className = 'dc-inline-status green';
+    el.innerHTML = '<span class="dot"></span>Cotizada';
+  } else if(state === 'rejected'){
+    el.className = 'dc-inline-status red';
+    el.innerHTML = '<span class="dot"></span>Rechazada';
+  }
 }
 
 function closeModal(){
@@ -1120,10 +1163,8 @@ function markQuoted(){
 
   quoted.add(currentIdx);
 
-  // actualizar fila en la lista
-  const cards = document.querySelectorAll('.device-card');
-  const statusEl = cards[currentIdx]?.querySelector('.dc-status');
-  if(statusEl) statusEl.innerHTML='<span class="st-dot green"></span><span class="st-text green">Cotizada</span>';
+  // actualizar estado inline junto al nombre en la lista
+  updateInlineStatus(currentIdx, 'quoted');
 
   updateProgress();
   showToast('✓ Cotizada');
@@ -1239,10 +1280,8 @@ function confirmRechazo(){
 
   rejected.add(currentIdx);
 
-  // actualizar fila en la lista
-  const cards = document.querySelectorAll('.device-card');
-  const statusEl = cards[currentIdx]?.querySelector('.dc-status');
-  if(statusEl) statusEl.innerHTML='<span class="st-dot" style="background:#ef4444;"></span><span class="st-text" style="color:#dc2626;">Rechazado por Bord</span>';
+  // actualizar estado inline junto al nombre en la lista
+  updateInlineStatus(currentIdx, 'rejected');
 
   updateProgress();
   showToast('Rechazado por Bord');
